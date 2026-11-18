@@ -3,10 +3,6 @@ package museo.controller;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import io.quarkus.qute.Location;
-import io.quarkus.qute.Template;
-import io.quarkus.qute.TemplateInstance;
-
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
@@ -17,12 +13,10 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
-
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import museo.model.Tour;
 import museo.repository.TourRepository;
-
 
 @Path("/visitas")
 @Produces(MediaType.APPLICATION_JSON)
@@ -32,28 +26,13 @@ public class TourController {
     @Inject
     TourRepository tourRepository;
 
-    @Inject
-    @Location("visitas.html")
-    Template listTemplate;
-
-    // ── VISTA HTML (MVC) ──────────────────────────────────────
-    @GET
-    @Produces(MediaType.TEXT_HTML)
-    public TemplateInstance view() {
-        List<Tour> tours = tourRepository.listAllSorted();
-        return listTemplate
-                .data("tours", tours)
-                .data("empty", tours.isEmpty())
-                .data("seccion", "visitas");
-    }
-
-    // ── LISTAR TODAS ──────────────────────────────────────────
+    // ── LISTAR TODAS ──────────────────────────────────────────────────────
     @GET
     public List<Tour> listAll() {
         return tourRepository.listAllSorted();
     }
 
-    // ── BUSCAR POR ID ─────────────────────────────────────────
+    // ── BUSCAR POR ID ─────────────────────────────────────────────────────
     @GET
     @Path("/{id}")
     public Response findById(@PathParam("id") Long id) {
@@ -66,14 +45,14 @@ public class TourController {
         return Response.ok(tour).build();
     }
 
-    // ── VISITAS ACTIVAS EN ESTE MOMENTO ───────────────────────
+    // ── VISITAS ACTIVAS EN ESTE MOMENTO ──────────────────────────────────
     @GET
     @Path("/activas")
     public List<Tour> findActive() {
         return tourRepository.findActive(LocalDateTime.now());
     }
 
-    // ── CREAR ─────────────────────────────────────────────────
+    // ── CREAR ─────────────────────────────────────────────────────────────
     @POST
     @Transactional
     public Response create(Tour tour) {
@@ -92,11 +71,11 @@ public class TourController {
                     .entity("La fecha de fin no puede ser anterior a la fecha de inicio")
                     .build();
         }
-        tourRepository.persist(tour);
+        tourRepository.persistAndFlush(tour);
         return Response.status(Response.Status.CREATED).entity(tour).build();
     }
 
-    // ── ACTUALIZAR ────────────────────────────────────────────
+    // ── ACTUALIZAR ────────────────────────────────────────────────────────
     @PUT
     @Path("/{id}")
     @Transactional
@@ -121,7 +100,7 @@ public class TourController {
         return Response.ok(tour).build();
     }
 
-    // ── ELIMINAR ──────────────────────────────────────────────
+    // ── ELIMINAR ──────────────────────────────────────────────────────────
     @DELETE
     @Path("/{id}")
     @Transactional

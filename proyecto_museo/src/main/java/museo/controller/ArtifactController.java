@@ -2,10 +2,6 @@ package museo.controller;
 
 import java.util.List;
 
-import io.quarkus.qute.Location;
-import io.quarkus.qute.Template;
-import io.quarkus.qute.TemplateInstance;
-
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
@@ -16,7 +12,6 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
-
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import museo.model.Artifact;
@@ -28,8 +23,6 @@ import museo.repository.ArtistRepository;
 import museo.repository.CategoryRepository;
 import museo.repository.ExhibitionRoomRepository;
 
-
- 
 @Path("/obras")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -37,21 +30,6 @@ public class ArtifactController {
 
     @Inject
     ArtifactRepository artifactRepository;
-
-    @Inject
-    @Location("obras.html")
-    Template listTemplate;
-
-    // ── VISTA HTML (MVC) ──────────────────────────────────────
-    @GET
-    @Produces(MediaType.TEXT_HTML)
-    public TemplateInstance view() {
-        List<Artifact> artifacts = artifactRepository.listAllSorted();
-        return listTemplate
-                .data("artifacts", artifacts)
-                .data("empty", artifacts.isEmpty())
-                .data("seccion", "obras");
-    }
 
     @Inject
     ArtistRepository artistRepository;
@@ -62,13 +40,13 @@ public class ArtifactController {
     @Inject
     ExhibitionRoomRepository roomRepository;
 
-    // ── LISTAR TODAS ──────────────────────────────────────────
+    // ── LISTAR TODAS ──────────────────────────────────────────────────────
     @GET
     public List<Artifact> listAll() {
         return artifactRepository.listAllSorted();
     }
 
-    // ── BUSCAR POR ID ─────────────────────────────────────────
+    // ── BUSCAR POR ID ─────────────────────────────────────────────────────
     @GET
     @Path("/{id}")
     public Response findById(@PathParam("id") Long id) {
@@ -81,28 +59,28 @@ public class ArtifactController {
         return Response.ok(artifact).build();
     }
 
-    // ── OBRAS EN UNA SALA ─────────────────────────────────────
+    // ── OBRAS EN UNA SALA ─────────────────────────────────────────────────
     @GET
     @Path("/sala/{salaId}")
     public List<Artifact> findByRoom(@PathParam("salaId") Long salaId) {
         return artifactRepository.findByExhibitionRoom(salaId);
     }
 
-    // ── OBRAS DE UNA CATEGORÍA ────────────────────────────────
+    // ── OBRAS DE UNA CATEGORÍA ────────────────────────────────────────────
     @GET
     @Path("/categoria/{categoriaId}")
     public List<Artifact> findByCategory(@PathParam("categoriaId") Long categoriaId) {
         return artifactRepository.findByCategory(categoriaId);
     }
 
-    // ── OBRAS DE UN ARTISTA ───────────────────────────────────
+    // ── OBRAS DE UN ARTISTA ───────────────────────────────────────────────
     @GET
     @Path("/artista/{artistaId}")
     public List<Artifact> findByArtist(@PathParam("artistaId") Long artistaId) {
         return artifactRepository.findByArtist(artistaId);
     }
 
-    // ── CREAR ─────────────────────────────────────────────────
+    // ── CREAR ─────────────────────────────────────────────────────────────
     @POST
     @Transactional
     public Response create(Artifact artifact) {
@@ -135,7 +113,7 @@ public class ArtifactController {
                     .entity("Sala con id " + artifact.getExhibitionRoom().getId() + " no encontrada")
                     .build();
         }
-        // Cargar artista (opcional)
+        // Cargar artista (campo opcional)
         if (artifact.getArtist() != null && artifact.getArtist().getId() != null) {
             Artist artist = artistRepository.findById(artifact.getArtist().getId());
             if (artist == null) {
@@ -151,7 +129,7 @@ public class ArtifactController {
         return Response.status(Response.Status.CREATED).entity(artifact).build();
     }
 
-    // ── ACTUALIZAR ────────────────────────────────────────────
+    // ── ACTUALIZAR ────────────────────────────────────────────────────────
     @PUT
     @Path("/{id}")
     @Transactional
@@ -188,7 +166,7 @@ public class ArtifactController {
         return Response.ok(artifact).build();
     }
 
-    // ── ELIMINAR ──────────────────────────────────────────────
+    // ── ELIMINAR ──────────────────────────────────────────────────────────
     @DELETE
     @Path("/{id}")
     @Transactional

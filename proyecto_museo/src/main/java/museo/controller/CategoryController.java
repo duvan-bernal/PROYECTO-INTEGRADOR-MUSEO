@@ -2,10 +2,6 @@ package museo.controller;
 
 import java.util.List;
 
-import io.quarkus.qute.Location;
-import io.quarkus.qute.Template;
-import io.quarkus.qute.TemplateInstance;
-
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
@@ -17,7 +13,6 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
-
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import museo.model.Category;
@@ -31,28 +26,13 @@ public class CategoryController {
     @Inject
     CategoryRepository categoryRepository;
 
-    @Inject
-    @Location("categorias.html")
-    Template listTemplate;
-
-    // ── VISTA HTML (MVC) ──────────────────────────────────────
-    @GET
-    @Produces(MediaType.TEXT_HTML)
-    public TemplateInstance view() {
-        List<Category> categories = categoryRepository.listAllSorted();
-        return listTemplate
-                .data("categories", categories)
-                .data("empty", categories.isEmpty())
-                .data("seccion", "categorias");
-    }
-
-    // ── LISTAR TODAS ──────────────────────────────────────────
+    // ── LISTAR TODAS ──────────────────────────────────────────────────────
     @GET
     public List<Category> listAll() {
         return categoryRepository.listAllSorted();
     }
 
-    // ── BUSCAR POR ID ─────────────────────────────────────────
+    // ── BUSCAR POR ID ─────────────────────────────────────────────────────
     @GET
     @Path("/{id}")
     public Response findById(@PathParam("id") Long id) {
@@ -65,10 +45,9 @@ public class CategoryController {
         return Response.ok(category).build();
     }
 
-    // ── CREAR (JSON) ──────────────────────────────────────────
+    // ── CREAR (JSON desde el frontend JS) ────────────────────────────────
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     @Transactional
     public Response create(Category category) {
         if (category == null || category.getName() == null || category.getName().isBlank()) {
@@ -89,7 +68,7 @@ public class CategoryController {
         return Response.status(Response.Status.CREATED).entity(category).build();
     }
 
-    // ── CREAR (FORMULARIO HTML) ───────────────────────────────
+    // ── CREAR (Formulario HTML tradicional) ──────────────────────────────
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.TEXT_HTML)
@@ -112,7 +91,7 @@ public class CategoryController {
         return Response.seeOther(java.net.URI.create("/categorias.html")).build();
     }
 
-    // ── ACTUALIZAR ────────────────────────────────────────────
+    // ── ACTUALIZAR ────────────────────────────────────────────────────────
     @PUT
     @Path("/{id}")
     @Transactional
@@ -129,7 +108,7 @@ public class CategoryController {
         return Response.ok(category).build();
     }
 
-    // ── ELIMINAR ──────────────────────────────────────────────
+    // ── ELIMINAR ──────────────────────────────────────────────────────────
     @DELETE
     @Path("/{id}")
     @Transactional

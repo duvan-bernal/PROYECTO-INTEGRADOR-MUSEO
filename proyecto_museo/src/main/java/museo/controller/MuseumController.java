@@ -2,10 +2,6 @@ package museo.controller;
 
 import java.util.List;
 
-import io.quarkus.qute.Location;
-import io.quarkus.qute.Template;
-import io.quarkus.qute.TemplateInstance;
-
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
@@ -16,7 +12,6 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
-
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import museo.model.Museum;
@@ -30,28 +25,13 @@ public class MuseumController {
     @Inject
     MuseumRepository museumRepository;
 
-    @Inject
-    @Location("museos.html")
-    Template listTemplate;
-
-    // ── VISTA HTML (MVC) ──────────────────────────────────────
-    @GET
-    @Produces(MediaType.TEXT_HTML)
-    public TemplateInstance view() {
-        List<Museum> museums = museumRepository.listAllSorted();
-        return listTemplate
-                .data("museums", museums)
-                .data("empty", museums.isEmpty())
-                .data("seccion", "museos");
-    }
-
-    // ── LISTAR TODOS ──────────────────────────────────────────
+    // ── LISTAR TODOS ──────────────────────────────────────────────────────
     @GET
     public List<Museum> listAll() {
         return museumRepository.listAllSorted();
     }
 
-    // ── BUSCAR POR ID ─────────────────────────────────────────
+    // ── BUSCAR POR ID ─────────────────────────────────────────────────────
     @GET
     @Path("/{id}")
     public Response findById(@PathParam("id") Long id) {
@@ -64,7 +44,7 @@ public class MuseumController {
         return Response.ok(museum).build();
     }
 
-    // ── CREAR ─────────────────────────────────────────────────
+    // ── CREAR ─────────────────────────────────────────────────────────────
     @POST
     @Transactional
     public Response create(Museum museum) {
@@ -82,7 +62,7 @@ public class MuseumController {
         return Response.status(Response.Status.CREATED).entity(museum).build();
     }
 
-    // ── ACTUALIZAR ────────────────────────────────────────────
+    // ── ACTUALIZAR ────────────────────────────────────────────────────────
     @PUT
     @Path("/{id}")
     @Transactional
@@ -102,7 +82,7 @@ public class MuseumController {
         return Response.ok(museum).build();
     }
 
-    // ── ELIMINAR ──────────────────────────────────────────────
+    // ── ELIMINAR ──────────────────────────────────────────────────────────
     @DELETE
     @Path("/{id}")
     @Transactional

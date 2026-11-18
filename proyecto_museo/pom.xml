@@ -31,47 +31,46 @@
     </dependencyManagement>
 
     <dependencies>
-    <!-- Quarkus RESTEasy / JAX-RS para los controladores REST -->
-    <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-rest</artifactId>
-    </dependency>
+        <!-- Quarkus RESTEasy / JAX-RS para los controladores REST -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-rest</artifactId>
+        </dependency>
 
-    <!-- Soporte JSON (Jackson) para serializar y deserializar modelos a JSON -->
-    <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-rest-jackson</artifactId>
-    </dependency>
+        <!-- Soporte JSON (Jackson) para serializar y deserializar modelos a JSON -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-rest-jackson</artifactId>
+        </dependency>
 
-    <!-- Quarkus Hibernate ORM con Panache (para la gestión de modelos y repositorios JPA) -->
-    <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-hibernate-orm-panache</artifactId>
-    </dependency>
+        <!-- Quarkus Hibernate ORM con Panache (para la gestión de modelos y repositorios JPA) -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-hibernate-orm-panache</artifactId>
+        </dependency>
 
-     <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-hibernate-orm</artifactId>
-    </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-hibernate-orm</artifactId>
+        </dependency>
 
-    <!-- Conector JDBC para MySQL -->
-    <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-jdbc-mysql</artifactId>
-    </dependency>
+        <!-- Conector JDBC para MySQL -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-jdbc-mysql</artifactId>
+        </dependency>
 
-    <!-- Quarkus Qute (motor de plantillas para tus archivos .qute.html) -->
-    <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-rest-qute</artifactId>
-    </dependency>
+        <!-- Quarkus Qute (motor de plantillas para archivos .html) -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-rest-qute</artifactId>
+        </dependency>
 
-    <!-- Quarkus ARC (necesario para la inyección de dependencias CDI) -->
-    <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-arc</artifactId>
-    </dependency>
-   
+        <!-- Quarkus ARC (necesario para la inyección de dependencias CDI) -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-arc</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

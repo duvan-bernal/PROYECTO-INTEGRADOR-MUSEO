@@ -2,10 +2,6 @@ package museo.controller;
 
 import java.util.List;
 
-import io.quarkus.qute.Location;
-import io.quarkus.qute.Template;
-import io.quarkus.qute.TemplateInstance;
-
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
@@ -16,14 +12,12 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
-
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import museo.model.ExhibitionRoom;
 import museo.model.Museum;
 import museo.repository.ExhibitionRoomRepository;
 import museo.repository.MuseumRepository;
-
 
 @Path("/salas")
 @Produces(MediaType.APPLICATION_JSON)
@@ -34,30 +28,15 @@ public class ExhibitionRoomController {
     ExhibitionRoomRepository roomRepository;
 
     @Inject
-    @Location("salas.html")
-    Template listTemplate;
-
-    // ── VISTA HTML (MVC) ──────────────────────────────────────
-    @GET
-    @Produces(MediaType.TEXT_HTML)
-    public TemplateInstance view() {
-        List<ExhibitionRoom> rooms = roomRepository.listAllSorted();
-        return listTemplate
-                .data("rooms", rooms)
-                .data("empty", rooms.isEmpty())
-                .data("seccion", "salas");
-    }
-
-    @Inject
     MuseumRepository museumRepository;
 
-    // ── LISTAR TODAS ──────────────────────────────────────────
+    // ── LISTAR TODAS ──────────────────────────────────────────────────────
     @GET
     public List<ExhibitionRoom> listAll() {
         return roomRepository.listAllSorted();
     }
 
-    // ── BUSCAR POR ID ─────────────────────────────────────────
+    // ── BUSCAR POR ID ─────────────────────────────────────────────────────
     @GET
     @Path("/{id}")
     public Response findById(@PathParam("id") Long id) {
@@ -70,14 +49,14 @@ public class ExhibitionRoomController {
         return Response.ok(room).build();
     }
 
-    // ── SALAS DE UN MUSEO ─────────────────────────────────────
+    // ── SALAS DE UN MUSEO ─────────────────────────────────────────────────
     @GET
     @Path("/museo/{museoId}")
     public List<ExhibitionRoom> findByMuseum(@PathParam("museoId") Long museoId) {
         return roomRepository.findByMuseum(museoId);
     }
 
-    // ── CREAR ─────────────────────────────────────────────────
+    // ── CREAR ─────────────────────────────────────────────────────────────
     @POST
     @Transactional
     public Response create(ExhibitionRoom room) {
@@ -91,7 +70,6 @@ public class ExhibitionRoomController {
                     .entity("El museo de la sala es obligatorio")
                     .build();
         }
-        // Verificar que el museo existe
         Museum museum = museumRepository.findById(room.getMuseum().getId());
         if (museum == null) {
             return Response.status(Response.Status.NOT_FOUND)
@@ -103,7 +81,7 @@ public class ExhibitionRoomController {
         return Response.status(Response.Status.CREATED).entity(room).build();
     }
 
-    // ── ACTUALIZAR ────────────────────────────────────────────
+    // ── ACTUALIZAR ────────────────────────────────────────────────────────
     @PUT
     @Path("/{id}")
     @Transactional
@@ -117,7 +95,6 @@ public class ExhibitionRoomController {
         room.setName(datos.getName());
         room.setDescription(datos.getDescription());
         room.setCapacity(datos.getCapacity());
-        // Cambiar museo si viene uno nuevo
         if (datos.getMuseum() != null && datos.getMuseum().getId() != null) {
             Museum museum = museumRepository.findById(datos.getMuseum().getId());
             if (museum == null) {
@@ -131,7 +108,7 @@ public class ExhibitionRoomController {
         return Response.ok(room).build();
     }
 
-    // ── ELIMINAR ──────────────────────────────────────────────
+    // ── ELIMINAR ──────────────────────────────────────────────────────────
     @DELETE
     @Path("/{id}")
     @Transactional

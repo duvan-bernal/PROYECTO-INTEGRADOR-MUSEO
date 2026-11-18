@@ -2,10 +2,6 @@ package museo.controller;
 
 import java.util.List;
 
-import io.quarkus.qute.Location;
-import io.quarkus.qute.Template;
-import io.quarkus.qute.TemplateInstance;
-
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
@@ -25,7 +21,6 @@ import museo.repository.ExhibitionRoomRepository;
 import museo.repository.TourRepository;
 import museo.repository.TourRoomRepository;
 
-
 @Path("/recorridos")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -35,38 +30,26 @@ public class TourRoomController {
     TourRoomRepository tourRoomRepository;
 
     @Inject
-    @Location("recorridos.html")
-    Template listTemplate;
-
-    // ── VISTA HTML (MVC) ──────────────────────────────────────
-    @GET
-    @Produces(MediaType.TEXT_HTML)
-    public TemplateInstance view() {
-        return listTemplate
-                .data("seccion", "recorridos");
-    }
-
-    @Inject
     TourRepository tourRepository;
 
     @Inject
     ExhibitionRoomRepository roomRepository;
 
-    // ── SALAS DE UNA VISITA (en orden de secuencia) ───────────
+    // ── SALAS DE UNA VISITA (en orden de secuencia) ───────────────────────
     @GET
     @Path("/visita/{visitaId}")
     public List<TourRoom> findByTour(@PathParam("visitaId") Long visitaId) {
         return tourRoomRepository.findByTour(visitaId);
     }
 
-    // ── VISITAS QUE PASAN POR UNA SALA ───────────────────────
+    // ── VISITAS QUE PASAN POR UNA SALA ───────────────────────────────────
     @GET
     @Path("/sala/{salaId}")
     public List<TourRoom> findByRoom(@PathParam("salaId") Long salaId) {
         return tourRoomRepository.findByExhibitionRoom(salaId);
     }
 
-    // ── ASIGNAR UNA SALA A UNA VISITA ─────────────────────────
+    // ── ASIGNAR UNA SALA A UNA VISITA ─────────────────────────────────────
     @POST
     @Transactional
     public Response create(TourRoom tourRoom) {
@@ -80,20 +63,17 @@ public class TourRoomController {
         Long visitaId = tourRoom.getId().getTourId();
         Long salaId   = tourRoom.getId().getExhibitionRoomId();
 
-        // Verificar que no existe ya ese par
         if (tourRoomRepository.existsByTourAndRoom(visitaId, salaId)) {
             return Response.status(Response.Status.CONFLICT)
                     .entity("La sala " + salaId + " ya está asignada a la visita " + visitaId)
                     .build();
         }
-        // Verificar que la visita existe
         Tour tour = tourRepository.findById(visitaId);
         if (tour == null) {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity("Visita guiada con id " + visitaId + " no encontrada")
                     .build();
         }
-        // Verificar que la sala existe
         ExhibitionRoom room = roomRepository.findById(salaId);
         if (room == null) {
             return Response.status(Response.Status.NOT_FOUND)
@@ -107,11 +87,11 @@ public class TourRoomController {
         }
         tourRoom.setTour(tour);
         tourRoom.setExhibitionRoom(room);
-        tourRoomRepository.persist(tourRoom);
+        tourRoomRepository.persistAndFlush(tourRoom);
         return Response.status(Response.Status.CREATED).entity(tourRoom).build();
     }
 
-    // ── ACTUALIZAR NÚMERO DE SECUENCIA ────────────────────────
+    // ── ACTUALIZAR NÚMERO DE SECUENCIA ───────────────────────────────────
     @PUT
     @Path("/{visitaId}/{salaId}")
     @Transactional
@@ -136,7 +116,7 @@ public class TourRoomController {
         return Response.ok(tourRoom).build();
     }
 
-    // ── QUITAR UNA SALA DE UNA VISITA ─────────────────────────
+    // ── QUITAR UNA SALA DE UNA VISITA ─────────────────────────────────────
     @DELETE
     @Path("/{visitaId}/{salaId}")
     @Transactional
@@ -155,4 +135,3 @@ public class TourRoomController {
         return Response.noContent().build();
     }
 }
-
